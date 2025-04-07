@@ -5,6 +5,7 @@
     android:id="@+id/listRecycler"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:onClick="newReceipt"
     tools:context=".ListFragment">
 
 
@@ -26,11 +27,12 @@
         android:layout_width="56dp"
         android:layout_height="51dp"
         android:clickable="true"
+        android:onClick="newReceipt"
         android:src="@android:drawable/ic_menu_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.907" />
+        app:layout_constraintVertical_bias="0.952" />
 </androidx.constraintlayout.widget.ConstraintLayout>
