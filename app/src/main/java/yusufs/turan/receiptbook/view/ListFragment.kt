@@ -1,4 +1,4 @@
-package yusufs.turan.receiptbook
+package yusufs.turan.receiptbook.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import yusufs.turan.receiptbook.databinding.FragmentListBinding
-import yusufs.turan.receiptbook.databinding.FragmentReceiptBinding
 
 
 class ListFragment : Fragment() {

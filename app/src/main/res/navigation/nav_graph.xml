@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="yusufs.turan.receiptbook.ListFragment"
+        android:name="yusufs.turan.receiptbook.view.ListFragment"
         android:label="fragment_list"
         tools:layout="@layout/fragment_list" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/receiptFragment"
-        android:name="yusufs.turan.receiptbook.ReceiptFragment"
+        android:name="yusufs.turan.receiptbook.view.ReceiptFragment"
         android:label="fragment_receipt"
         tools:layout="@layout/fragment_receipt" >
         <argument

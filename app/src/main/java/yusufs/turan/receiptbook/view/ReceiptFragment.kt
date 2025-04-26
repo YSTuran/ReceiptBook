@@ -1,4 +1,4 @@
-package yusufs.turan.receiptbook
+package yusufs.turan.receiptbook.view
 
 import android.Manifest
 import android.content.Intent
@@ -9,13 +9,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.provider.MediaStore.Images
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -76,7 +74,7 @@ class ReceiptFragment : Fragment() {
     fun save(view: View){
 
     }
-    fun delete(view: View){
+    fun delete(view: View) {
 
     }
     fun selectImage(view: View){
