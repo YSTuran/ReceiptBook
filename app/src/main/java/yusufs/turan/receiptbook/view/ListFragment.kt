@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
+import androidx.room.Room
 import yusufs.turan.receiptbook.databinding.FragmentListBinding
+import yusufs.turan.receiptbook.roomdb.ReceiptDAO
+import yusufs.turan.receiptbook.roomdb.ReceiptDB
 
 
 class ListFragment : Fragment() {
@@ -14,9 +17,14 @@ class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var db: ReceiptDB
+    private lateinit var receiptDAO: ReceiptDAO
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        db = Room.databaseBuilder(requireContext() , ReceiptDB::class.java , "Receipts").build()
+        receiptDAO = db.receiptDao()
     }
 
     override fun onCreateView(

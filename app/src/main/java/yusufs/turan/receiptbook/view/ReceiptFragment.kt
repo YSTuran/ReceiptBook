@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Layout.Directions
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +20,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.Navigation
+import androidx.room.Room
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import yusufs.turan.receiptbook.databinding.FragmentReceiptBinding
+import yusufs.turan.receiptbook.model.Receipt
+import yusufs.turan.receiptbook.roomdb.ReceiptDAO
+import yusufs.turan.receiptbook.roomdb.ReceiptDB
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 
@@ -32,10 +43,17 @@ class ReceiptFragment : Fragment() {
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private var selectedImage : Uri?=null
     private var selectedBitmap : Bitmap?=null
+    private val mDisposable = CompositeDisposable()
+
+    private lateinit var db: ReceiptDB
+    private lateinit var receiptDAO: ReceiptDAO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registerlauncher()
+
+        db = Room.databaseBuilder(requireContext() , ReceiptDB::class.java , "Receipts").build()
+        receiptDAO = db.receiptDao()
     }
 
     override fun onCreateView(
@@ -72,8 +90,30 @@ class ReceiptFragment : Fragment() {
     }
 
     fun save(view: View){
+        val name = binding.editText.text.toString()
+        val ingredients= binding.editText2.text.toString()
 
+        if(selectedBitmap != null)
+        {
+            val smallBitmap = createSmallBitmap(selectedBitmap!! , 300)
+            val outputStream = ByteArrayOutputStream()
+            smallBitmap.compress(Bitmap.CompressFormat.PNG , 50 ,outputStream)
+            val myByteArray = outputStream.toByteArray()
+
+            val myReceipt = Receipt(name , ingredients , myByteArray)
+
+            mDisposable.add(receiptDAO.insert(myReceipt).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleResponseForInsert))
+
+        }
     }
+
+    private fun handleResponseForInsert(){
+        val action = ReceiptFragmentDirections.actionReceiptFragmentToListFragment()
+        Navigation.findNavController(requireView()).navigate(action)
+    }
+
     fun delete(view: View) {
 
     }
@@ -157,6 +197,29 @@ class ReceiptFragment : Fragment() {
                Toast.makeText(requireContext(),"Permission Denied!", Toast.LENGTH_LONG).show()
            }
        }
+    }
+
+    private fun createSmallBitmap(userSelection : Bitmap , maxValue : Int) : Bitmap{
+        var width = userSelection.width
+        var height = userSelection.height
+
+        var bitmapRatio : Double = width.toDouble() / height.toDouble()
+
+        if (bitmapRatio > 1 ){
+            //image horizontal
+            width = maxValue
+            val shortenedHeight = width / bitmapRatio
+            height = shortenedHeight.toInt()
+        }
+        else{
+            //image vertical
+            height = maxValue
+            val shortenedWidth = height * bitmapRatio
+            width = shortenedWidth.toInt()
+        }
+
+
+        return Bitmap.createScaledBitmap(userSelection , width , height , true)
     }
 
     override fun onDestroyView() {

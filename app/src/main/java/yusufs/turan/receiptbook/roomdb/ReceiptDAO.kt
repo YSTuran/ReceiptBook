@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
 import yusufs.turan.receiptbook.model.Receipt
 
 
@@ -11,15 +13,15 @@ import yusufs.turan.receiptbook.model.Receipt
 interface ReceiptDAO {
 
     @Query("Select * from Receipt")
-    fun getAll() : List<Receipt>
+    fun getAll() : Flowable<List<Receipt>>
 
     @Query("Select * from Receipt where id = :id")
-    fun findById(id : Int) : Receipt
+    fun findById(id : Int) : Flowable<Receipt>
 
     @Insert
-    fun insert(receipt: Receipt)
+    fun insert(receipt: Receipt) : Completable
 
     @Delete
-    fun delete(receipt: Receipt)
+    fun deleteData(receipt: Receipt) : Completable
 
 }
