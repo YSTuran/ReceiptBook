@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -85,8 +86,22 @@ class ReceiptFragment : Fragment() {
                 //shows existing receipt
                 binding.button2.isEnabled=true
                 binding.button.isEnabled=false
+                val id = ReceiptFragmentArgs.fromBundle(it).id
+                mDisposable.add(
+                    receiptDAO.findById(id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::handleResponse)
+                )
             }
         }
+    }
+
+    private fun handleResponse(receipt: Receipt){
+        binding.editText.setText(receipt.name)
+        binding.editText2.setText(receipt.ingredients)
+        val bitmap = BitmapFactory.decodeByteArray(receipt.pic, 0 , receipt.pic.size)
+        binding.imageView.setImageBitmap(bitmap)
     }
 
     fun save(view: View){
@@ -225,6 +240,7 @@ class ReceiptFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        mDisposable.clear()
     }
 
 }
