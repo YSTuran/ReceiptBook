@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="Test"
+        android:background="#50F255"
         android:textSize="24sp">
 
     </TextView>

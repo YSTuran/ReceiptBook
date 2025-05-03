@@ -45,6 +45,7 @@ class ReceiptFragment : Fragment() {
     private var selectedImage : Uri?=null
     private var selectedBitmap : Bitmap?=null
     private val mDisposable = CompositeDisposable()
+    private var selectedReceipt : Receipt? = null
 
     private lateinit var db: ReceiptDB
     private lateinit var receiptDAO: ReceiptDAO
@@ -77,6 +78,7 @@ class ReceiptFragment : Fragment() {
 
             if (infos=="new"){
                 //adding new receipt
+                selectedReceipt = null
                 binding.button2.isEnabled=false
                 binding.button.isEnabled=true
                 binding.editText.setText("")
@@ -98,10 +100,11 @@ class ReceiptFragment : Fragment() {
     }
 
     private fun handleResponse(receipt: Receipt){
-        binding.editText.setText(receipt.name)
-        binding.editText2.setText(receipt.ingredients)
         val bitmap = BitmapFactory.decodeByteArray(receipt.pic, 0 , receipt.pic.size)
         binding.imageView.setImageBitmap(bitmap)
+        binding.editText.setText(receipt.name)
+        binding.editText2.setText(receipt.ingredients)
+        selectedReceipt = receipt
     }
 
     fun save(view: View){
@@ -130,6 +133,13 @@ class ReceiptFragment : Fragment() {
     }
 
     fun delete(view: View) {
+
+        if(selectedReceipt != null){
+            mDisposable.add(receiptDAO.deleteData(receipt = selectedReceipt!!)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleResponseForInsert))
+        }
 
     }
     fun selectImage(view: View){
